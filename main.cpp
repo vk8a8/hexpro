@@ -1,15 +1,37 @@
 #include <fstream>
-#include <cstdint>
+#include <cstring>
+#include <iostream>
+
+void printHelp() {
+	std::cout << "Usage: hexpro <input file> [options]\n";
+	std::cout << "Options:\n";
+	std::cout << "	-h, --help		Show this message and exit\n";
+	std::cout << "	-o FILE			specify output file\n";
+	std::cout << std::endl;
+}
 
 int main(int argc, char* argv[]) {
-	const char hc[17] = "0123456789ABCDEF";
+	constexpr char hc[17] = "0123456789ABCDEF";
 	char lsd;
 	char msd;
+	char* outname = const_cast<char*>("out.txt");
+	char* inname;
 
-	std::ifstream ifs(argv[1]);
+	for ( int i = 0; i < argc; i++ )
+	{
+		if ( !strcmp( argv[i], "-h") || !strcmp( argv[i], "--help") ) {
+			printHelp();
+			return 0;
+		} else if ( !strcmp( argv[i], "-o") ) {
+			i++;
+			outname = argv[i];
+		} else inname = argv[i];
+	}
+
+	std::ifstream ifs(inname);
 	std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>())	);
 
-	FILE* outfptr = fopen("out.txt", "w");
+	FILE* outfptr = fopen(outname, "w");
 	FILE* infptr = fopen(argv[1], "rb");
 
 	fseek(infptr, 0, SEEK_END);
