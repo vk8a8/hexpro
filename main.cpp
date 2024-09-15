@@ -1,13 +1,9 @@
 #include <fstream>
-#include <chrono>
-#include <iostream>
 
 int main(int argc, char* argv[]) {
 	constexpr char hc[17] = "0123456789ABCDEF";
 	char lsd;
 	char msd;
-
-	auto start = std::chrono::high_resolution_clock::now();
 
 	std::ifstream ifs(argv[1]);
 	std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>())	);
@@ -29,11 +25,6 @@ int main(int argc, char* argv[]) {
 		fprintf(outfptr,"%c%c ", msd, lsd);
 	}
 	fclose(outfptr);
-
-	auto end = std::chrono::high_resolution_clock::now();
-	std::chrono::duration<double> taken = end - start;
-
-	std::cout << taken.count();
 
 	return 0;
 }
