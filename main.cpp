@@ -1,4 +1,3 @@
-#include <iostream>
 #include <fstream>
 #include <cstdint>
 
@@ -9,7 +8,7 @@ int main(int argc, char* argv[]) {
 
 	std::ifstream ifs(argv[1]);
 	std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>())	);
-	
+
 	FILE* outfptr = fopen("out.txt", "w");
 	FILE* infptr = fopen(argv[1], "rb");
 
@@ -19,9 +18,9 @@ int main(int argc, char* argv[]) {
 
 	for ( long i = 0; i < fsize; i++ )
 	{
-		char ch = content[i];
+		unsigned char ch = content[i];
 		lsd = hc[ch & 0xF];
-		msd = hc[(ch & 0x7F) >>  4];
+		msd = hc[ch >> 4];
 
 		fprintf(outfptr,"%c%c ", msd, lsd);
 	}
