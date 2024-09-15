@@ -1,5 +1,5 @@
 usege :
-gcc main.c -o hexdump
+g++ main.cpp -o hexdump
 # then
 hexdump [input filename] [output filename(optional)]
 
