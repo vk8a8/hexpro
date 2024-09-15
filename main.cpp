@@ -3,10 +3,9 @@
 #include <cstdint>
 
 int main(int argc, char* argv[]) {
-	const char hexchars[17] = "0123456789ABCDEF";
+	const char hc[17] = "0123456789ABCDEF";
 	char lsd;
 	char msd;
-	char hexdec[3];
 
 	std::ifstream ifs(argv[1]);
 	std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>())	);
@@ -21,12 +20,10 @@ int main(int argc, char* argv[]) {
 	for ( long i = 0; i < fsize; i++ )
 	{
 		char ch = content[i];
-		lsd = hexchars[ch & 0xF];
-		msd = hexchars[(ch & 0x7F) >>  4];
+		lsd = hc[ch & 0xF];
+		msd = hc[(ch & 0x7F) >>  4];
 
-		hexdec[0] = msd;
-		hexdec[1] = lsd;
-		fprintf(outfptr,hexdec);
+		fprintf(outfptr,"%c%c ", msd, lsd);
 	}
 	fclose(outfptr);
 
