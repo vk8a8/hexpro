@@ -3,21 +3,25 @@
 #include <iostream>
 
 void printHelp() {
-	std::cout << "Usage: hexpro <input file> [options]\n";
-	std::cout << "Options:\n";
-	std::cout << "	-h, --help		Show this message and exit\n";
-	std::cout << "	-o FILE			Specify output file\n";
-	std::cout << "	-l LENGTH		Specify line length in byte pairs\n";
-	std::cout << std::endl;
+	using std::cout;
+	cout << "Usage: hexpro <input file> [options]\n";
+	cout << "Options:\n";
+	cout << "	-h, --help		Show this message and exit\n";
+	cout << "	-o FILE			Specify output file\n";
+	cout << "	-l LENGTH		Specify line length in byte pairs\n";
+	cout << std::endl;
 }
 
 int main(int argc, char* argv[]) {
+
+	using std::string, std::istreambuf_iterator;
+
 	constexpr char hc[17] = "0123456789ABCDEF";
 	char lsd;
 	char msd;
-	char* outname = const_cast<char*>("out.txt");
 	char* inname;
-	int linelength = 10;
+	int linelength = 16;
+	string outname = "out.txt";
 
 	for ( int i = 0; i < argc; i++ )
 	{
@@ -35,9 +39,10 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::ifstream ifs(inname);
-	std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>())	);
+	string content( (istreambuf_iterator<char>(ifs) ),
+			(istreambuf_iterator<char>()));
 
-	FILE* outfptr = fopen(outname, "w");
+	FILE* outfptr = fopen(outname.c_str(), "w");
 	FILE* infptr = fopen(argv[1], "rb");
 
 	fseek(infptr, 0, SEEK_END);
@@ -45,7 +50,7 @@ int main(int argc, char* argv[]) {
 	fseek(infptr, 0, SEEK_SET);
 
 	int bytec = 0;
-	char bytes[50] = { 0 };
+	char bytes[1 + linelength * 3] = { 0 };
 
 	for ( long i = 0; i < fsize; i++ )
 	{
