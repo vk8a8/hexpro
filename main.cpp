@@ -6,7 +6,8 @@ void printHelp() {
 	std::cout << "Usage: hexpro <input file> [options]\n";
 	std::cout << "Options:\n";
 	std::cout << "	-h, --help		Show this message and exit\n";
-	std::cout << "	-o FILE			specify output file\n";
+	std::cout << "	-o FILE			Specify output file\n";
+	std::cout << "	-l LENGTH		Specify line length in byte pairs\n";
 	std::cout << std::endl;
 }
 
@@ -16,6 +17,7 @@ int main(int argc, char* argv[]) {
 	char msd;
 	char* outname = const_cast<char*>("out.txt");
 	char* inname;
+	int linelength = 10;
 
 	for ( int i = 0; i < argc; i++ )
 	{
@@ -25,7 +27,11 @@ int main(int argc, char* argv[]) {
 		} else if ( !strcmp( argv[i], "-o") ) {
 			i++;
 			outname = argv[i];
-		} else inname = argv[i];
+		} else if ( !strcmp( argv[i], "-l") ) {
+			i++;
+			linelength = static_cast<int>( strtol( argv[i], NULL, 10 ) );
+		}
+		else inname = argv[i];
 	}
 
 	std::ifstream ifs(inname);
