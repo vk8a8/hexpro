@@ -44,13 +44,24 @@ int main(int argc, char* argv[]) {
 	long fsize = ftell(infptr);
 	fseek(infptr, 0, SEEK_SET);
 
+	int bytec = 0;
+	char bytes[50] = { 0 };
+
 	for ( long i = 0; i < fsize; i++ )
 	{
 		unsigned char ch = content[i];
 		lsd = hc[ch & 0xF];
 		msd = hc[ch >> 4];
 
-		fprintf(outfptr,"%c%c ", msd, lsd);
+		bytes[3 * bytec] = msd;
+		bytes[3 * bytec + 1] = lsd;
+		bytes[3 * bytec + 2] = ' ';
+
+		if (bytec >= 15) {
+			fprintf(outfptr,"%s\n", bytes);
+			bytec = 0;
+		} else bytec++;
+
 	}
 	fclose(outfptr);
 
