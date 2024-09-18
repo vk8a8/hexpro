@@ -8,3 +8,7 @@ test: main.cpp
 htest: main.cpp
 	g++ main.cpp -o hexpro
 	./hexpro -h
+
+ltest: main.cpp
+	g++ main.cpp -o hexpro
+	./hexpro main.cpp -l 4

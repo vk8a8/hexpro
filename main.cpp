@@ -13,14 +13,14 @@ void printHelp() {
 }
 
 int main(int argc, char* argv[]) {
+	constexpr char hc[17] = "0123456789ABCDEF";
 
 	using std::string, std::istreambuf_iterator;
 
-	constexpr char hc[17] = "0123456789ABCDEF";
-	char lsd;
-	char msd;
+	char lsd; // least sig digit
+	char msd; // most sig digit
 	char* inname;
-	int linelength = 16;
+	char linelength = 16;
 	string outname = "out.txt";
 
 	for ( int i = 0; i < argc; i++ )
@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 			outname = argv[i];
 		} else if ( !strcmp( argv[i], "-l") ) {
 			i++;
-			linelength = static_cast<int>( strtol( argv[i], NULL, 10 ) );
+			linelength = static_cast<int>(strtol(argv[i], NULL, 10));
 		}
 		else inname = argv[i];
 	}
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
 	long fsize = ftell(infptr);
 	fseek(infptr, 0, SEEK_SET);
 
-	int bytec = 0;
+	char bytec = 0;
 	char bytes[1 + linelength * 3] = { 0 };
 
 	for ( long i = 0; i < fsize; i++ )
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 		bytes[3 * bytec + 1] = lsd;
 		bytes[3 * bytec + 2] = ' ';
 
-		if (bytec >= 15) {
+		if (bytec == linelength - 1 ) {
 			fprintf(outfptr,"%s\n", bytes);
 			bytec = 0;
 		} else bytec++;
