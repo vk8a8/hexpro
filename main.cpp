@@ -32,8 +32,8 @@ int main(int argc, char* argv[]) {
 			i++;
 			outname = argv[i ];
 		} else if ( !strcmp( argv[i], "-l") ) {
-			linelength = static_cast<char>( strtol(argv[i + 1], NULL, 10) );
-			continue;
+			i++;
+			linelength = static_cast<char>( strtol(argv[i], NULL, 10) );
 		}
 		else
 			inname = argv[i];

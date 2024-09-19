@@ -15,7 +15,7 @@ ltest: main.cpp
 
 otest: main.cpp
 	g++ main.cpp -o hexpro
-	./hexpro main,cpp -o out.txt
+	./hexpro main.cpp -o out.txt
 
 clean:
 	rm hexpro
