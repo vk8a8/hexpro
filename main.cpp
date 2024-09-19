@@ -23,14 +23,14 @@ int main(int argc, char* argv[]) {
 	char linelength = 16;
 	string outname = "out.txt";
 
-	for ( int i = 1; i < argc; i++ )
+	for ( int i = 1; i < argc; i++ ) // whatever
 	{
 		if ( !strcmp( argv[i], "-h") || !strcmp( argv[i], "--help") ) {
 			printHelp();
 			return 0;
 		} else if ( !strcmp( argv[i], "-o") ) {
-			outname = argv[i + 1];
-			continue;
+			i++;
+			outname = argv[i ];
 		} else if ( !strcmp( argv[i], "-l") ) {
 			linelength = static_cast<char>( strtol(argv[i + 1], NULL, 10) );
 			continue;
