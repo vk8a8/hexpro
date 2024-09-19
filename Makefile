@@ -12,3 +12,6 @@ htest: main.cpp
 ltest: main.cpp
 	g++ main.cpp -o hexpro
 	./hexpro main.cpp -l 4
+
+clean:
+	rm hexpro
