@@ -3,48 +3,76 @@
 #include <iostream>
 
 void printHelp() {
-	std::cout << "Usage: hexpro <input file> [options]\n";
-	std::cout << "Options:\n";
-	std::cout << "	-h, --help		Show this message and exit\n";
-	std::cout << "	-o FILE			specify output file\n";
-	std::cout << std::endl;
+	using std::cout;
+	cout << "Usage: hexpro <input file> [options]\n";
+	cout << "Options:\n";
+	cout << "	-h, --help		Show this message and exit\n";
+	cout << "	-o FILE			Specify output file\n";
+	cout << "	-l LENGTH		Specify line length in byte pairs\n";
+	cout << std::endl;
 }
 
 int main(int argc, char* argv[]) {
 	constexpr char hc[17] = "0123456789ABCDEF";
-	char lsd;
-	char msd;
-	char* outname = const_cast<char*>("out.txt");
-	char* inname;
 
-	for ( int i = 0; i < argc; i++ )
+	using std::string, std::istreambuf_iterator;
+
+	char lsd; // least sig digit
+	char msd; // most sig digit
+	char* inname;
+	char linelength = 16;
+	string outname = "out.txt";
+
+	for ( int i = 1; i < argc; i++ ) // whatever
 	{
 		if ( !strcmp( argv[i], "-h") || !strcmp( argv[i], "--help") ) {
 			printHelp();
 			return 0;
 		} else if ( !strcmp( argv[i], "-o") ) {
 			i++;
-			outname = argv[i];
-		} else inname = argv[i];
+			outname = argv[i ];
+		} else if ( !strcmp( argv[i], "-l") ) {
+			i++;
+			linelength = static_cast<char>( strtol(argv[i], NULL, 10) );
+		}
+		else
+			inname = argv[i];
+		
 	}
 
-	std::ifstream ifs(inname);
-	std::string content( (std::istreambuf_iterator<char>(ifs) ), (std::istreambuf_iterator<char>())	);
+	short chunkll = linelength * 3;
 
-	FILE* outfptr = fopen(outname, "w");
+	std::ifstream ifs(inname);
+	string content( (istreambuf_iterator<char>(ifs) ),
+			(istreambuf_iterator<char>()));
+
+	FILE* outfptr = fopen(outname.c_str(), "w");
 	FILE* infptr = fopen(argv[1], "rb");
 
 	fseek(infptr, 0, SEEK_END);
 	long fsize = ftell(infptr);
 	fseek(infptr, 0, SEEK_SET);
+	fclose(infptr);
+
+	char bytec = 0;
+	char bytes[1 + chunkll] = { 0 };
+
+	memset(bytes, ' ', linelength * 3);
 
 	for ( long i = 0; i < fsize; i++ )
 	{
 		unsigned char ch = content[i];
-		lsd = hc[ch & 0xF];
-		msd = hc[ch >> 4];
+		lsd = hc[ch & 0xF];	// abcdABCD & 00001111 -> 0000ABCD
+		msd = hc[ch >> 4];	// abcdABCD >> 4 -> 0000abcd (uchar makes it not preserve first bit)
 
-		fprintf(outfptr,"%c%c ", msd, lsd);
+		bytes[3 * bytec] = msd;
+		bytes[3 * bytec + 1] = lsd;
+
+		if (bytec == linelength - 1 ) {
+			fprintf(outfptr,"%s\n", bytes);
+			bytec = 0;
+		} else bytec++;
+
 	}
 	fclose(outfptr);
 
