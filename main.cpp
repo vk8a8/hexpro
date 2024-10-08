@@ -35,14 +35,21 @@ int main(int argc, char* argv[]) {
 			return 0;
 		} else if ( !strcmp( argv[i], "-o") ) {
 			i++;
+			if (!argv[i]) {
+				std::cout << "invalid output file" << std::endl;
+				return -1;
+			}
 			outname = argv[i ];
 		} else if ( !strcmp( argv[i], "-l") ) {
 			i++;
+			if (!argv[i]) {
+				std::cout << "Invalid line length" << std::endl;
+				return -1;
+			}
 			linelength = static_cast<char>( strtol(argv[i], NULL, 10) );
 		}
 		else
 			inname = argv[i];
-		
 	}
 
 	short chunkll = linelength * 3;
@@ -51,8 +58,13 @@ int main(int argc, char* argv[]) {
 	string content( (istreambuf_iterator<char>(ifs) ),
 			(istreambuf_iterator<char>()));
 
+	FILE* infptr = fopen(inname, "rb");
+	if (infptr == nullptr) {
+		std::cout << "File does not exist." << std::endl;
+		return -1;
+	}
+
 	FILE* outfptr = fopen(outname.c_str(), "w");
-	FILE* infptr = fopen(argv[1], "rb");
 
 	fseek(infptr, 0, SEEK_END);
 	long fsize = ftell(infptr);
