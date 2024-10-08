@@ -23,6 +23,11 @@ int main(int argc, char* argv[]) {
 	char linelength = 16;
 	string outname = "out.txt";
 
+	if (argc == 1) {
+		std::cout << "No arguments supplied!\nExiting." << std::endl;
+		return -1;
+	}
+
 	for ( int i = 1; i < argc; i++ ) // whatever
 	{
 		if ( !strcmp( argv[i], "-h") || !strcmp( argv[i], "--help") ) {
