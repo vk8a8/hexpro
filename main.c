@@ -21,16 +21,14 @@ int main(int argc, char* argv[]) {
 
 	for ( int i = 1; i < argc; i++ ) // args
 	{
-		if ( !strcmp( argv[i], "-h") || !strcmp( argv[i], "--help") ) {
+		if ( !strcmp( argv[i], "-h") || !strcmp( argv[i], "--help")) {
 			printHelp();
 			return 0;
-		} else if ( !strcmp( argv[i], "-o") ) {
-			i++;
-			outname = argv[i];
-		} else if ( !strcmp( argv[i], "-l") ) {
-			i++;
-			linelength = (int) strtol(argv[i], NULL, 10);
 		}
+		else if (!strcmp( argv[i], "-o"))
+			outname = argv[++i];
+		else if (!strcmp( argv[i], "-l"))
+			linelength = (int) strtol(argv[++i], NULL, 10);
 		else
 			inname = argv[i];
 	}
@@ -38,11 +36,16 @@ int main(int argc, char* argv[]) {
 	short chunkll = linelength * 3;
 
 	FILE* outfptr = fopen(outname, "w");
-	FILE* infptr = fopen(inname, "rb");
+	if (!outfptr) {
+		puts("Error writing to file");
+		return -1;
+	}
 
-	fseek(infptr, 0, SEEK_END);
-	long fsize = ftell(infptr);
-	fseek(infptr, 0, SEEK_SET);
+	FILE* infptr = fopen(inname, "rb");
+	if (!infptr) {
+		puts("Invalid input file");
+		return -1;
+	}
 
 	unsigned int bytec = 0;
 	char bytes[chunkll + 1];
@@ -64,6 +67,7 @@ int main(int argc, char* argv[]) {
 		if (bytec == linelength - 1) {
 			fputs(bytes, outfptr);
 			bytec = 0;
+
 			memset(bytes, ' ', sizeof(bytes));
 			bytes[chunkll] = '\0';
 			bytes[chunkll - 1] = '\n';
@@ -71,7 +75,8 @@ int main(int argc, char* argv[]) {
 
 	}
 
-	if (bytec > 0) {
+	if (bytec > 0)
+	{
 		bytes[3 * bytec] = '\n';
 		bytes[3 * bytec + 1] = '\0';
 		fputs(bytes, outfptr);
