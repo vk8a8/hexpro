@@ -1,15 +1,14 @@
 #include <fstream>
 #include <cstring>
 #include <iostream>
+#include <stdio.h>
 
 void printHelp() {
-	using std::cout;
-	cout << "Usage: hexpro <input file> [options]\n";
-	cout << "Options:\n";
-	cout << "	-h, --help		Show this message and exit\n";
-	cout << "	-o FILE			Specify output file\n";
-	cout << "	-l LENGTH		Specify line length in byte pairs\n";
-	cout << std::endl;
+	printf("Usage: hexpro <input file> [options]\n");
+	printf("Options:\n");
+	printf("	-h, --help		Show this message and exit\n");
+	printf("	-o FILE			Specify output file\n");
+	printf("	-l LENGTH		Specify line length in byte pairs\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -21,7 +20,7 @@ int main(int argc, char* argv[]) {
 	char msd; // most sig digit
 	char* inname;
 	char linelength = 16;
-	string outname = "out.txt";
+	char* outname = "out.txt";
 
 	for ( int i = 1; i < argc; i++ ) // whatever
 	{
@@ -30,7 +29,7 @@ int main(int argc, char* argv[]) {
 			return 0;
 		} else if ( !strcmp( argv[i], "-o") ) {
 			i++;
-			outname = argv[i ];
+			outname = argv[i];
 		} else if ( !strcmp( argv[i], "-l") ) {
 			i++;
 			linelength = static_cast<char>( strtol(argv[i], NULL, 10) );
@@ -46,22 +45,24 @@ int main(int argc, char* argv[]) {
 	string content( (istreambuf_iterator<char>(ifs) ),
 			(istreambuf_iterator<char>()));
 
-	FILE* outfptr = fopen(outname.c_str(), "w");
+	FILE* outfptr = fopen(outname, "w");
 	FILE* infptr = fopen(argv[1], "rb");
 
 	fseek(infptr, 0, SEEK_END);
 	long fsize = ftell(infptr);
 	fseek(infptr, 0, SEEK_SET);
-	fclose(infptr);
 
 	char bytec = 0;
 	char bytes[1 + chunkll] = { 0 };
 
 	memset(bytes, ' ', linelength * 3);
 
-	for ( long i = 0; i < fsize; i++ )
+//	for ( long i = 0; i < fsize; i++ )
+	int p;
+	while ((p = fgetc(infptr)) != EOF)
 	{
-		unsigned char ch = content[i];
+//		unsigned char ch = content[i];
+		unsigned char ch = (unsigned char) p;
 		lsd = hc[ch & 0xF];	// abcdABCD & 00001111 -> 0000ABCD
 		msd = hc[ch >> 4];	// abcdABCD >> 4 -> 0000abcd (uchar makes it not preserve first bit)
 
@@ -74,6 +75,7 @@ int main(int argc, char* argv[]) {
 		} else bytec++;
 
 	}
+	fclose(infptr);
 	fclose(outfptr);
 
 	return 0;
