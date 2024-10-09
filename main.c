@@ -10,6 +10,24 @@ void printHelp() {
 	puts("	-l LENGTH		Specify line length in byte pairs");
 }
 
+void parseArgs(int argc, char* argv[],
+		int* linelength, char** inname, char** outname) {
+
+	for (int i = 1; i < argc; i++) {
+		if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
+			printHelp();
+			exit(0);
+		}
+		else if (!strcmp(argv[i], "-o"))
+			*outname = argv[++i];
+		else if (!strcmp(argv[i], "-l"))
+			*linelength = (int) strtol(argv[++i], NULL, 10);
+		else
+			*inname = argv[i];
+	}
+}
+
+
 int main(int argc, char* argv[]) {
 	const char hc[17] = "0123456789ABCDEF";
 
@@ -19,19 +37,7 @@ int main(int argc, char* argv[]) {
 	int linelength = 16;
 	char* outname = "out.txt";
 
-	for ( int i = 1; i < argc; i++ ) // args
-	{
-		if ( !strcmp( argv[i], "-h") || !strcmp( argv[i], "--help")) {
-			printHelp();
-			return 0;
-		}
-		else if (!strcmp( argv[i], "-o"))
-			outname = argv[++i];
-		else if (!strcmp( argv[i], "-l"))
-			linelength = (int) strtol(argv[++i], NULL, 10);
-		else
-			inname = argv[i];
-	}
+	parseArgs(argc, argv, &linelength, &inname, &outname);
 
 	short chunkll = linelength * 3;
 
