@@ -11,7 +11,7 @@ void printHelp() {
 }
 
 void parseArgs(int argc, char* argv[],
-		int* linelength, char** inname, char** outname) {
+		int* ll, char** inname, char** outname) {
 
 	for (int i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
@@ -21,7 +21,7 @@ void parseArgs(int argc, char* argv[],
 		else if (!strcmp(argv[i], "-o"))
 			*outname = argv[++i];
 		else if (!strcmp(argv[i], "-l"))
-			*linelength = (int) strtol(argv[++i], NULL, 10);
+			*ll = (int) strtol(argv[++i], NULL, 10);
 		else
 			*inname = argv[i];
 	}
@@ -31,15 +31,15 @@ void parseArgs(int argc, char* argv[],
 int main(int argc, char* argv[]) {
 	const char hc[17] = "0123456789ABCDEF";
 
-	char lsd; // least sig digit
-	char msd; // most sig digit
+	char lsd;	// least sig digit
+	char msd;	// most sig digit
 	char* inname;
-	int linelength = 16;
+	int ll = 16;
 	char* outname = "out.txt";
 
-	parseArgs(argc, argv, &linelength, &inname, &outname);
+	parseArgs(argc, argv, &ll, &inname, &outname);
 
-	short chunkll = linelength * 3;
+	short chunkll = ll * 3;
 
 	FILE* outfptr = fopen(outname, "w");
 	if (!outfptr) {
@@ -65,12 +65,12 @@ int main(int argc, char* argv[]) {
 	{
 		unsigned char ch = (unsigned char) p;
 		lsd = hc[ch & 0xF];	// abcdABCD & 00001111 -> 0000ABCD
-		msd = hc[ch >> 4];	// abcdABCD >> 4 -> 0000abcd (uchar makes it not preserve first bit)
+		msd = hc[ch >> 4];	// abcdABCD >> 4 -> 0000abcd
 
 		bytes[3 * bytec] = msd;
 		bytes[3 * bytec + 1] = lsd;
 
-		if (bytec == linelength - 1) {
+		if (bytec == ll - 1) {
 			fputs(bytes, outfptr);
 			bytec = 0;
 
@@ -81,7 +81,7 @@ int main(int argc, char* argv[]) {
 
 	}
 
-	if (bytec > 0)
+	if (bytec)
 	{
 		bytes[3 * bytec] = '\n';
 		bytes[3 * bytec + 1] = '\0';
