@@ -1,5 +1,5 @@
 usege :
-g++ main.cpp -o hexpro
+make
 # then
 hexpro [input filename] [options]
 options:
