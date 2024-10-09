@@ -1,8 +1,11 @@
 default: main.c
 	gcc main.c -o hexpro
 
-test: main.cpp
-	g++ main.cpp -o hexpro -g2
+test: main.c
+	gcc main.c -o hexpro -g2
+	rm -f out.txt
+	./hexpro main.c
+	vim out.txt
 
 clean:
 	rm hexpro
